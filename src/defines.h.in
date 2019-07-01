@@ -1,0 +1,13 @@
+#ifndef MSDCONFIG_H
+#define MSDCONFIG_H
+#define MeanSquareDisplacement_VERSION_MAJOR @MeanSquareDisplacement_VERSION_MAJOR@
+#define MeanSquareDisplacement_VERSION_MINOR @MeanSquareDisplacement_VERSION_MINOR@
+#cmakedefine USE_BOOST
+#cmakedefine USE_CUDA
+#cmakedefine USE_CPU
+
+
+#ifdef USE_CUDA
+#define USE_GPU
+#endif
+#endif
