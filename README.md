@@ -15,7 +15,15 @@
 ##  USAGE:  
   
 ``` bash  
-	cat pos.dat | msd -N [number of signals (particles)] -Nsteps [number of lags in file] -dimensions [=3, number of columns per signal to read] > pos.msd   
+  cat pos.dat | msd   
+  -N [number of signals (particles)]  
+  -Nsteps [number of lags in file]  
+  -dimensions [=3, number of columns per signal to read]  
+  -device [=auto, choose between CUDA or FFTW: CPU or GPU]   
+  -precision [=double, can also be float. Float is much faster and needs half the memory]  
+  
+  > pos.msd  
+   
 ```  
     
 ##  FORMAT:    
