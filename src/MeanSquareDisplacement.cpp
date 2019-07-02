@@ -225,7 +225,8 @@ int main(int argc, char *argv[]){
       std::cerr<<"ERROR! This code was compiled without support for CUDA or FFTW, I need one of them!"<<std::endl;
       exit(1);
     }
-
+    //Something is up with GPU
+    dev = device::cpu;
   }
   auto S2s = MeanSquareDisplacement::autocorr<real>(dev, signalOr, signalSize, Nsignals);
   std::vector<real> msd(signalSize*Nsignals, 0);
