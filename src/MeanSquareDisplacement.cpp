@@ -286,6 +286,7 @@ template<class real> void compute_msd(){
   }
 
   //Print results
+  std::cout.precision(sizeof(real)*2);
   std::cout<<0<<" ";
   for(int k = 0; k<dimensions; k++)
     std::cout<<0<<" ";
