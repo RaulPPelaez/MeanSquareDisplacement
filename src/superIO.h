@@ -230,9 +230,8 @@ namespace superIO{
     ~superFile(){
       if(closeFILEAtDestruction)
 	if(in!=stdin && in != nullptr) fclose(in);
-      if(currentWriteIndex>0){
-	(void) ::write(1, writeBuf.data(), currentWriteIndex);
-      }
+      if(currentWriteIndex>0)
+	write_sys_wrapper(1, writeBuf.data(), currentWriteIndex);
     }
 
     bool good(){
@@ -330,7 +329,7 @@ namespace superIO{
       }
       currentWriteIndex += i;
       if(size_t(currentWriteIndex)==writeBuf.size()-1){
-	(void) ::write(1, writeBuf.data(), writeBuf.size());
+	write_sys_wrapper(1, writeBuf.data(), writeBuf.size());
 	
 	currentWriteIndex = 0;
 	write(str+i, size-i);
@@ -339,14 +338,14 @@ namespace superIO{
   
     inline void setWriteBufferSize(size_t size){
       if(size_t(currentWriteIndex)>=size){
-	(void) ::write(1, writeBuf.data(), currentWriteIndex);	
+	write_sys_wrapper(1, writeBuf.data(), currentWriteIndex);	
 	currentWriteIndex = 0;
       }
       writeBuf.resize(size);
       WRITEBUFSIZE = size;
     }
     inline void flush(){
-      (void) ::write(1, writeBuf.data(), currentWriteIndex);
+      write_sys_wrapper(1, writeBuf.data(), currentWriteIndex);
       currentWriteIndex = 0;
 }
 
@@ -363,7 +362,14 @@ namespace superIO{
       READBUFSIZE = size;
     
     }
-  
+
+  private:
+    template<class ...T>
+    void write_sys_wrapper(T... args){      
+      if(::write(args...)<0){
+	std::cerr<<"ERROR: Could not write to output"<<std::endl; exit(1);
+      }
+    }
   };
 
 
