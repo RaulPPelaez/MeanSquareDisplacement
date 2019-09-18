@@ -1,7 +1,7 @@
 ### Raul P. Pelaez 2019. Fast Mean Square Displacement    
   
       
-  This code computes the MSD of a list of trajectories in spunto format using the FFT in O(N) time.  
+  This code computes the MSD of a list of trajectories in spunto format using the FFT in O(N) time.  It can be compiled/run with or without GPU support.
   
 ##  COMPILE:  
 	  
