@@ -12,7 +12,8 @@
 #include<iostream>
 #include<unistd.h>
 #include <string.h>
-
+#include<sstream>
+#include<iomanip>
 #ifdef USE_BOOST
 #include <boost/spirit/include/qi_real.hpp>
 #include <boost/spirit/include/qi_int.hpp>
@@ -54,7 +55,7 @@ namespace superIO{
 	    and endCharacter<nCharacters){
 	endCharacter++;
       }
-      T value;
+      T value = T();
       qiparse(line+firstCharacter, line+endCharacter, value);
       readedValues[i] = value;
     
@@ -102,8 +103,6 @@ namespace superIO{
  
   }
 
-
-
 #ifdef USE_BOOST
   template <typename T>
   inline bool number2stringBoost(std::string &str, T const& value)
@@ -112,27 +111,40 @@ namespace superIO{
     return boost::spirit::karma::generate(sink, value); 
   }
 #endif
+
+  namespace detail{
+    template<class T>   struct PrecisionFormat{static constexpr auto format = "%.7g";};
+    template<> struct PrecisionFormat<float>{static constexpr auto format = "%.7g";};
+    template<> struct PrecisionFormat<double>{static constexpr auto format =  "%.13g";};
+  }
   
   template <typename T>
   inline bool number2stringSTD(std::string &str, T const& value){
-    str += std::to_string(value);
+    static std::string converted;
+    converted.resize(100);
+    auto format = detail::PrecisionFormat<T>::format;
+    int readed;
+    while((readed = sprintf(&converted[0], format, value)) > (int)converted.size()){
+      converted.resize(readed+1);
+    }
+    converted.resize(readed);
+    str += converted;
     return true;
   }
 
   template<class T>
   inline bool number2string(std::string &str, T const& value){
 
-    #ifdef USE_BOST
-    return number2stringBOOST(str, value);
-    #else
+    // #ifdef USE_BOOST STD is faster everytime given the same precision
+    // return number2string(str, value);
+    // #else
     return number2stringSTD(str, value);
-    #endif
+    //#endif
   }
 
 
-  class superFile{
+  class superInputFile{
     int READBUFSIZE=1<<22;
-    int WRITEBUFSIZE=1<<22;
     std::vector<char> buf;
     char *current = nullptr, *end = nullptr;
 
@@ -142,15 +154,9 @@ namespace superIO{
     bool lastChunk = false;
     int fileDescriptor = -1;
 
-
-    std::vector<char> writeBuf;
-    int currentWriteIndex = 0;
-
     bool peekedLine = false;
     char* lastPickedLine;
     int lastPickedLineSize;
-
-
     
     inline int readNextChunk(){
       //If it is the last chunk ending return end of file code
@@ -194,18 +200,18 @@ namespace superIO{
     }
 
   public:
-    superFile(std::string fileName):superFile(fopen(fileName.c_str(), "r")){closeFILEAtDestruction =true;}
-    superFile():superFile(stdin){}
-    superFile(FILE *in):in(in){
+    superInputFile(std::string fileName):superInputFile(fopen(fileName.c_str(), "r")){closeFILEAtDestruction =true;}
+    superInputFile():superInputFile(stdin){}
+    superInputFile(FILE *in):in(in){
       if(!in){
-	//std::cerr<<"ERROR: INVALID FILE!!"<<std::endl;
-	//exit(1);
+	std::cerr<<"ERROR: INVALID FILE!!"<<std::endl;
+	exit(1);
 	return;
       }
       fileDescriptor = fileno(in);
       if(fileDescriptor<0){
-	// std::cerr<<"ERROR: CANNOT OPEN FILE!!"<<std::endl;
-	// exit(1);
+	std::cerr<<"ERROR: CANNOT OPEN FILE!!"<<std::endl;
+	exit(1);
 	fclose(in);
 	in = nullptr;
 	return;
@@ -222,16 +228,10 @@ namespace superIO{
 	return;
       }
       if(feof(in)) lastChunk = true;
-
-      writeBuf.resize(WRITEBUFSIZE);
-      currentWriteIndex=1;
-      
     }
-    ~superFile(){
+    ~superInputFile(){
       if(closeFILEAtDestruction)
 	if(in!=stdin && in != nullptr) fclose(in);
-      if(currentWriteIndex>0)
-	write_sys_wrapper(1, writeBuf.data(), currentWriteIndex);
     }
 
     bool good(){
@@ -321,34 +321,6 @@ namespace superIO{
       return false;
     }
 
-    inline void write(const char * str, size_t size){
-      uint i;
-      for(i=0; i<size; i++){
-	if((currentWriteIndex + i) == writeBuf.size()-1) break;
-	writeBuf[currentWriteIndex+i] = str[i];
-      }
-      currentWriteIndex += i;
-      if(size_t(currentWriteIndex)==writeBuf.size()-1){
-	write_sys_wrapper(1, writeBuf.data(), writeBuf.size());
-	
-	currentWriteIndex = 0;
-	write(str+i, size-i);
-      }
-    }
-  
-    inline void setWriteBufferSize(size_t size){
-      if(size_t(currentWriteIndex)>=size){
-	write_sys_wrapper(1, writeBuf.data(), currentWriteIndex);	
-	currentWriteIndex = 0;
-      }
-      writeBuf.resize(size);
-      WRITEBUFSIZE = size;
-    }
-    inline void flush(){
-      write_sys_wrapper(1, writeBuf.data(), currentWriteIndex);
-      currentWriteIndex = 0;
-}
-
     inline void setReadBufferSize(size_t size){
       if(size<size_t(READBUFSIZE)){
 	std::cerr<<"WARNING: You can only increase the read buffer size, ignoring..."<<std::endl;
@@ -362,7 +334,63 @@ namespace superIO{
       READBUFSIZE = size;
     
     }
+  };
 
+  class superOutputFile{
+
+    int WRITEBUFSIZE=1<<22;
+
+    FILE *in = nullptr;
+    bool closeFILEAtDestruction = false;
+    int fileDescriptor = -1;
+
+    std::vector<char> writeBuf;
+    int currentWriteIndex = 0;
+
+
+  public:
+    superOutputFile(std::string fileName):superOutputFile(fopen(fileName.c_str(), "w")){closeFILEAtDestruction =true;}
+    superOutputFile():superOutputFile(stdout){}
+    superOutputFile(FILE *in):in(in){
+      writeBuf.resize(WRITEBUFSIZE);
+      fileDescriptor = fileno(in);
+      currentWriteIndex=0;
+    }
+    ~superOutputFile(){
+      if(currentWriteIndex>0)
+	write_sys_wrapper(fileDescriptor, writeBuf.data(), currentWriteIndex);	    
+      if(closeFILEAtDestruction)
+	if(in!=stdin && in != nullptr) fclose(in);
+    }
+
+
+    inline void write(const char * str, size_t size){
+      uint i;
+      for(i=0; i<size; i++){
+	if((currentWriteIndex + i) == writeBuf.size()-1) break;
+	writeBuf[currentWriteIndex+i] = str[i];	
+      }
+      currentWriteIndex += i;
+      if(size_t(currentWriteIndex)==writeBuf.size()-1){
+	write_sys_wrapper(fileDescriptor, (const void*)(writeBuf.data()), size_t(currentWriteIndex));
+	currentWriteIndex = 0;
+	write(str+i, size-i);
+      }
+    }
+  
+    inline void setWriteBufferSize(size_t size){
+      if(size_t(currentWriteIndex)>=size){
+	write_sys_wrapper(fileDescriptor, (const void*)(writeBuf.data()), size_t(currentWriteIndex));	
+	currentWriteIndex = 0;
+      }
+      writeBuf.resize(size);
+      WRITEBUFSIZE = size;
+    }
+    inline void flush(){
+      write_sys_wrapper(fileDescriptor, (const void*)(writeBuf.data()), size_t(currentWriteIndex));
+      currentWriteIndex = 0;
+    }
+    
   private:
     template<class ...T>
     void write_sys_wrapper(T... args){      

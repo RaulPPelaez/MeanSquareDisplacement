@@ -210,7 +210,7 @@ template<class real> void compute_msd(){
   std::vector<real> signalOr(signalSize*Nsignals, 0);
   //Read
   {
-    superIO::superFile in(fileName);
+    superIO::superInputFile in(fileName);
     if(!in.good()){std::cerr<<"ERROR!: Cannot open file "<<fileName<<std::endl; exit(1);}
     
     std::vector<real> means(Nsignals, 0);
