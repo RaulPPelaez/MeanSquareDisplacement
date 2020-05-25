@@ -7,21 +7,26 @@ endif()
 
 set_target_properties(MeanSquareDisplacement PROPERTIES OUTPUT_NAME "msd")
 
+if(USE_CPU)
 
-find_package(FFTW QUIET REQUIRED COMPONENTS SIMPLE)
+  find_package(FFTW QUIET COMPONENTS SIMPLE)
 
-if(NOT FFTW_FOUND OR USE_MKL)
-  find_package(FFTW QUIET REQUIRED COMPONENTS MKL SIMPLE)
-  include_directories(MeanSquareDisplacement ${FFTW_fftw3.h_DIRS})
-  set(USE_MKL ON)
+  if(NOT FFTW_FOUND)
+    if(USE_MKL)
+      find_package(FFTW QUIET REQUIRED COMPONENTS MKL SIMPLE)
+      include_directories(MeanSquareDisplacement ${FFTW_fftw3.h_DIRS})
+      set(USE_MKL ON)
+    else()
+      set(USE_CPU OFF)
+    endif()
+  endif()
+  if(USE_CPU)
+    include_directories(MeanSquareDisplacement ${FFTW_INCLUDE_DIRS})
+    link_directories(MeanSquareDisplacement ${FFTW_LIBRARY_DIRS})
+
+    target_link_libraries(MeanSquareDisplacement  ${FFTW_LIBRARIES})
+  endif()
 endif()
-
-include_directories(MeanSquareDisplacement ${FFTW_INCLUDE_DIRS})
-link_directories(MeanSquareDisplacement ${FFTW_LIBRARY_DIRS})
-
-target_link_libraries(MeanSquareDisplacement  ${FFTW_LIBRARIES})
-
-
 
 install(TARGETS MeanSquareDisplacement RUNTIME DESTINATION bin)
 

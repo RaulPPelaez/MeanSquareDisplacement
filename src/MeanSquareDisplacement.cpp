@@ -183,7 +183,7 @@ void substractMean(std::vector<real> &signal, int Nsignals, int signalSize) {
 device chooseDevice(Configuration conf){
   device dev = conf.dev;
   if(!conf.force_device){
-    if(conf.signalSize*conf.Nsignals*conf.dimensions > 1000000 and
+    if((conf.signalSize*conf.Nsignals*conf.dimensions > 1000000 or not MeanSquareDisplacement::cpu_mode_available) and
        MeanSquareDisplacement::gpu_mode_available and
        MeanSquareDisplacement::canUseCurrentGPU()){
       dev = device::gpu;
@@ -195,7 +195,6 @@ device chooseDevice(Configuration conf){
       std::cerr<<"ERROR! This code was compiled without support for CUDA or FFTW, I need one of them!"<<std::endl;
       exit(1);
     }
-    dev = device::cpu;
   }
   return dev;
 }
