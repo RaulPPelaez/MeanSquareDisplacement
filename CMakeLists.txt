@@ -27,11 +27,19 @@ if(NOT DONT_USE_CUDA)
     enable_language(CUDA)
     set(USE_CUDA ON)
     
-    set(CMAKE_CUDA_STANDARD 11)
+    if(CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 11)
+    set(CMAKE_CUDA_STANDARD 14)
+    set(CMAKE_CXX_STANDARD 14)
+    else()
+      include_directories(src/third_party)
+      set(CMAKE_CXX_STANDARD 11)
+      set(CMAKE_CUDA_STANDARD 11)
+    endif()
+
     set(CMAKE_CUDA_STANDARD_REQUIRED ON)
     set(CMAKE_CUDA_SEPARABLE_COMPILATION OFF)
     
-    execute_process(COMMAND bash  ${PROJECT_SOURCE_DIR}/cmake/listArchs.sh OUTPUT_VARIABLE ARCHS)
+    #execute_process(COMMAND bash  ${PROJECT_SOURCE_DIR}/cmake/listArchs.sh OUTPUT_VARIABLE ARCHS)
     set(CMAKE_CUDA_FLAGS "  --expt-extended-lambda ${ARCHS} ${CMAKE_CUDA_FLAGS}")
     
   endif()
