@@ -15,13 +15,13 @@ namespace MeanSquareDisplacement{
 
   bool canUseCurrentGPU(){
     constexpr int minArch = 35;
-    
+
     int dev = -1;
     CudaSafeCall(cudaGetDevice(&dev));
-    
+
     cudaDeviceProp deviceProp;
     CudaSafeCall(cudaGetDeviceProperties(&deviceProp, dev));
-                
+
     int cuda_arch = 100*deviceProp.major + 10*deviceProp.minor;
     if(cuda_arch < minArch) return false;
     return true;
@@ -32,34 +32,34 @@ namespace MeanSquareDisplacement{
     using value_type = T;
     typedef thrust::device_ptr<T>  pointer;
     inline pointer allocate(size_t n){
-      value_type* result = nullptr;      
-      cudaError_t error = cudaMallocManaged(&result, sizeof(T)*n, cudaMemAttachGlobal);      
+      value_type* result = nullptr;
+      cudaError_t error = cudaMallocManaged(&result, sizeof(T)*n, cudaMemAttachGlobal);
       if(error != cudaSuccess)
 	throw thrust::system_error(error, thrust::cuda_category(),
-				   "managed_allocator::allocate(): cudaMallocManaged");           
+				   "managed_allocator::allocate(): cudaMallocManaged");
       return thrust::device_pointer_cast(result);
     }
-    
+
     inline void deallocate(pointer ptr, size_t){
       cudaError_t error = cudaFree(thrust::raw_pointer_cast(ptr));
       if(error != cudaSuccess)
 	throw thrust::system_error(error, thrust::cuda_category(),
-				   "managed_allocator::deallocate(): cudaFree");	
+				   "managed_allocator::deallocate(): cudaFree");
     }
   };
 
   template<class T>
   using managed_vector = thrust::device_vector<T, managed_allocator<T>>;
 
-  
+
   template<class real>
   std::vector<real> autocorrGPU(std::vector<real> &signalOr, int signalSize, int Nsignals){
-    
+
     using cufftReal = cufftReal_t<real>;
     using cufftComplex = cufftComplex_t<real>;
     //pad with zeros
     int signalSizePad =signalSize*2;
-  
+
     int N = 2*(signalSizePad/2+1);
     //thrust::host_vector<real> signalH;
     managed_vector<real> signal;
@@ -90,7 +90,7 @@ namespace MeanSquareDisplacement{
     }
     */
     size_t cufft_storage = 0;
-    
+
     managed_vector<char> tmp_storage;
     {
       //FFT both signals
@@ -106,14 +106,14 @@ namespace MeanSquareDisplacement{
 	int inembed[] = { 0 };    // --- Input size with pitch (ignored for 1D transforms)
 	int onembed[] = { 0 };    // --- Output size with pitch (ignored for 1D transforms)
 	int batch = Nsignals;     // --- Number of batched executions
-	CufftSafeCall(cufftMakePlanMany(plan, rank, n, 
+	CufftSafeCall(cufftMakePlanMany(plan, rank, n,
 					inembed, istride, idist,
 					onembed, ostride, odist, CUFFT_Real2Complex<real>::value, batch,
 					&cufft_storage));
 
 	// size_t free_mem, total_mem;
 	// CudaSafeCall(cudaMemGetInfo(&free_mem, &total_mem));
-      
+
 	// if(free_mem < cufft_storage){
 	//   std::cerr<<"Not enough memory in device!"<<std::endl;
 	//   exit(1);
@@ -127,9 +127,9 @@ namespace MeanSquareDisplacement{
 	}
 	CufftSafeCall(cufftSetWorkArea(plan,
 				       (void*)thrust::raw_pointer_cast(tmp_storage.data())));
-	  
+
       }
-  
+
 
       auto signal_ptr = thrust::raw_pointer_cast(signal.data());
       CufftSafeCall(cufftExecReal2Complex<real>(plan, (cufftReal*)signal_ptr, (cufftComplex*)signal_ptr));
@@ -138,7 +138,7 @@ namespace MeanSquareDisplacement{
     {
       try{
 	thrust::device_ptr<cufftComplex> signal_complex((cufftComplex*)thrust::raw_pointer_cast(signal.data()));
-	thrust::transform(thrust::device,
+	thrust::transform(thrust::cuda::par,
 			  signal_complex, signal_complex+signal.size()/2, signal_complex,
 			  [=] __device__ (cufftComplex a){
 			    return cufftComplex{(a.x*a.x+a.y*a.y)/(real)signalSizePad, 0};
@@ -158,7 +158,7 @@ namespace MeanSquareDisplacement{
 	cufft_storage = 0;
 	CufftSafeCall(cufftCreate(&plan));
 	CufftSafeCall(cufftSetAutoAllocation(plan, 0));
-	      
+
 	//Special plan for interleaved signals
 	int rank = 1;           // --- 1D FFTs
 	int n[] = { signalSizePad };   // --- Size of the Fourier transform
@@ -167,7 +167,7 @@ namespace MeanSquareDisplacement{
 	int inembed[] = { 0 };    // --- Input size with pitch (ignored for 1D transforms)
 	int onembed[] = { 0 };    // --- Output size with pitch (ignored for 1D transforms)
 	int batch = Nsignals;     // --- Number of batched executions
-	CufftSafeCall(cufftMakePlanMany(plan, rank, n, 
+	CufftSafeCall(cufftMakePlanMany(plan, rank, n,
 					inembed, istride, idist,
 					onembed, ostride, odist, CUFFT_Complex2Real<real>::value, batch,
 					&cufft_storage));
@@ -212,7 +212,7 @@ namespace MeanSquareDisplacement{
   template<class real, class ...T>
   std::vector<real> autocorrGPU(T...){
     std::cerr<<"THIS CODE WAS COMPILED IN CPU ONLY MODE"<<std::endl;
-    exit(1);     
+    exit(1);
   }
 }
 #endif
