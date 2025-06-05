@@ -103,6 +103,23 @@ The output file `pos.msd` will contain the Mean Square Displacement for each tim
 
 Check the [documentation](https://raulppelaez.github.io/MeanSquareDisplacement/) for the C++ and Python APIs.
 
+## CMake integration:  
+
+If order to use the C++ library in your own project, you can add the following lines to your `CMakeLists.txt` file:
+
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+  msd
+  GIT_REPOSITORY https://github.com/RaulPPelaez/MeanSquareDisplacement/
+  GIT_TAG        3.0.0  # or any other tag/branch you want to use
+)
+FetchContent_MakeAvailable(msd)
+add_executable(your_executable your_source_file.cpp)
+target_link_libraries(your_executable PRIVATE msd::msd)
+```
+See above for the available CMake options to customize the build.
+
 ## Python Example:
 The following example generates a set of random walks in 2D and computes the MSD using the Python wrapper. Each dimension has a different diffusion coefficient.
 
