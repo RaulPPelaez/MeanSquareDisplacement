@@ -1,19 +1,23 @@
 cmake_minimum_required(VERSION 3.11)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(FFTW REQUIRED COMPONENTS FLOAT_LIB DOUBLE_LIB)
 add_library(msd SHARED src/msd.cpp)
+include_directories(autocorr_cuda
+  PUBLIC
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/mean_square_displacement/include>
+  $<INSTALL_INTERFACE:include>
+)
+
 target_include_directories(msd
   PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-  )
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/mean_square_displacement/include>
+  $<INSTALL_INTERFACE:mean_square_displacement/include>
+)
 
 set_target_properties(msd PROPERTIES POSITION_INDEPENDENT_CODE ON)
 add_library(msd::msd ALIAS msd) # For FetchContent compatibility
 
 add_library(autocorr STATIC src/autocorr.cpp)
-
 add_library(autocorr_cpu STATIC src/autocorr_cpu.cpp)
 target_link_libraries(autocorr_cpu PUBLIC FFTW::Float FFTW::Double)
 target_link_libraries(autocorr PUBLIC autocorr_cpu)
@@ -37,7 +41,7 @@ if(BUILD_EXECUTABLE)
   install(TARGETS MeanSquareDisplacement RUNTIME DESTINATION bin)
 endif()
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/defines.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/defines.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/msd/defines.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/msd/defines.h)
 
 find_package(Git)
 if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
@@ -45,7 +49,7 @@ if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
 else()
   SET(GITCOMMIT "unknown")
 endif()
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/gitversion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/gitversion.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/msd/gitversion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/msd/gitversion.h)
 
 
 if(BUILD_PYTHON)
@@ -69,9 +73,9 @@ endif()
 
 if(INSTALL_HEADERS)
 install(
-  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/msd.hpp
-  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/common.hpp
-  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/defines.h
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/msd/msd.hpp
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/msd/common.hpp
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/msd/defines.h
   DESTINATION include/msd
 )
 endif()
