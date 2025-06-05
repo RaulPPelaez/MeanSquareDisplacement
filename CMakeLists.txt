@@ -20,6 +20,7 @@ option(USE_BOOST "Use Boost-qi for reading, highly improves reading performance"
 option(USE_CUDA "Compile in hybrid CPU/GPU mode, requires nvcc" ON)
 option(BUILD_TESTS "Build the tests" ON)
 option(BUILD_EXECUTABLE "Build the executable" ON)
+option(INSTALL_HEADERS "Install the headers" ON)
 if(NOT CMAKE_CUDA_ARHITECTURES)
   set(CMAKE_CUDA_ARCHITECTURES "all-major")
 endif()

@@ -3,9 +3,9 @@ cmake_minimum_required(VERSION 3.11)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(FFTW REQUIRED COMPONENTS FLOAT_LIB DOUBLE_LIB)
 add_library(msd SHARED src/msd.cpp)
+target_include_directories(msd PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set_target_properties(msd PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-install(TARGETS msd LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+add_library(msd::msd ALIAS msd) # For FetchContent compatibility
 
 add_library(autocorr STATIC src/autocorr.cpp)
 
@@ -61,3 +61,17 @@ if(BUILD_PYTHON)
   target_link_libraries(wrapper PRIVATE msd)
   install(TARGETS wrapper LIBRARY DESTINATION ${Python_SITEARCH}/mean_square_displacement)
 endif()
+
+if(INSTALL_HEADER_FILES)
+install(
+  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  DESTINATION include
+)
+endif()
+install(TARGETS msd LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(
+  EXPORT msdTargets
+  FILE msdTargets.cmake
+  NAMESPACE msd::
+  DESTINATION lib/cmake/msd
+)
