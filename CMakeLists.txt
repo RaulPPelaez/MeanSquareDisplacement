@@ -16,7 +16,6 @@ project(MeanSquareDisplacement VERSION ${GIT_TAG} LANGUAGES CXX)
 message(STATUS "MeanSquareDisplacement version: ${GIT_TAG}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
-
 option(USE_BOOST "Use Boost-qi for reading, highly improves reading performance" OFF)
 option(USE_CUDA "Compile in hybrid CPU/GPU mode, requires nvcc" ON)
 option(BUILD_TESTS "Build the tests" ON)

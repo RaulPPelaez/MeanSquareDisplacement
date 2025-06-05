@@ -14,6 +14,8 @@ target_link_libraries(autocorr_cpu PUBLIC FFTW::Float FFTW::Double)
 target_link_libraries(autocorr PUBLIC autocorr_cpu)
 
 if(USE_CUDA)
+  set(CMAKE_CUDA_STANDARD 20)
+  set(CMAKE_CUDA_STANDARD_REQUIRED YES)
   add_library(autocorr_cuda STATIC src/autocorr_cuda.cu)
   set_target_properties(autocorr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON)
   set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} --extended-lambda")
