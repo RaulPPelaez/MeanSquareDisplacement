@@ -45,6 +45,7 @@ class CMakeBuild(build_ext):
             "-DBUILD_TESTS=OFF",
             "-DBUILD_EXECUTABLE=OFF",
             "-DBUILD_PYTHON=ON",
+            f"-DUSE_CUDA={os.environ.get('USE_CUDA', 'ON').upper()}",
         ]
 
         num_jobs = os.cpu_count()
@@ -64,7 +65,7 @@ class CMakeBuild(build_ext):
 
 setup(
     name="mean_square_displacement",
-    version="3.0.0",
+    version=version,
     description="High-performance MSD library",
     packages=["mean_square_displacement"],
     package_dir={"": "mean_square_displacement/python"},
