@@ -3,7 +3,11 @@ cmake_minimum_required(VERSION 3.11)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 find_package(FFTW REQUIRED COMPONENTS FLOAT_LIB DOUBLE_LIB)
 add_library(msd SHARED src/msd.cpp)
-target_include_directories(msd PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(msd
+  PUBLIC
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 set_target_properties(msd PROPERTIES POSITION_INDEPENDENT_CODE ON)
 add_library(msd::msd ALIAS msd) # For FetchContent compatibility
 
@@ -23,7 +27,7 @@ if(USE_CUDA)
   target_link_libraries(autocorr PUBLIC autocorr_cuda)
 endif()
 
-target_link_libraries(msd PUBLIC autocorr)
+target_link_libraries(msd PRIVATE autocorr)
 
 if(BUILD_EXECUTABLE)
   add_executable(MeanSquareDisplacement src/MeanSquareDisplacement.cpp)
