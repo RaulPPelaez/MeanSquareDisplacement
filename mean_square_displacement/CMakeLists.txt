@@ -29,7 +29,7 @@ if(BUILD_EXECUTABLE)
   add_executable(MeanSquareDisplacement src/MeanSquareDisplacement.cpp)
   target_link_libraries(MeanSquareDisplacement msd)
   set_target_properties(MeanSquareDisplacement PROPERTIES OUTPUT_NAME "msd")
-  install(TARGETS MeanSquareDisplacement RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+  install(TARGETS MeanSquareDisplacement RUNTIME DESTINATION bin)
 endif()
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/defines.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/defines.h)
@@ -68,7 +68,11 @@ install(
   DESTINATION include
 )
 endif()
-install(TARGETS msd LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+install(
+  TARGETS msd
+  EXPORT msdTargets
+  LIBRARY DESTINATION lib
+)
 install(
   EXPORT msdTargets
   FILE msdTargets.cmake
