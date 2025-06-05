@@ -119,6 +119,7 @@ def test_random_walk():
 
 
 def test_random_walk_different_slopes():
+    # Test with different slopes for each dimension
     nparticles = 100000
     ndim = 2
     ntimes = 1000
