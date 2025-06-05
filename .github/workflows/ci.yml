@@ -64,7 +64,7 @@ jobs:
 
     - name: Build Documentation
       run: |
-        micromamba activate spreadinterp
+        micromamba activate msd
         cd docs
         pip install -r requirements.txt
         doxygen ../Doxyfile
