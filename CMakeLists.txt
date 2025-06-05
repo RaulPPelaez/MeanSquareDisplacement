@@ -19,6 +19,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
 option(USE_BOOST "Use Boost-qi for reading, highly improves reading performance" OFF)
 option(USE_CUDA "Compile in hybrid CPU/GPU mode, requires nvcc" ON)
+option(BUILD_TESTS "Build the tests" ON)
 option(BUILD_EXECUTABLE "Build the executable" ON)
 if(NOT CMAKE_CUDA_ARHITECTURES)
   set(CMAKE_CUDA_ARCHITECTURES "all-major")
@@ -37,5 +38,8 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 add_subdirectory(mean_square_displacement)
-enable_testing()
-add_subdirectory(tests)
+
+if(BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()

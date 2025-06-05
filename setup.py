@@ -42,6 +42,7 @@ class CMakeBuild(build_ext):
             "-DCMAKE_INSTALL_PREFIX=" + install_dir,  # Point to the install directory
             "-DPYTHON_EXECUTABLE=" + sys.executable,
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
+            "-DBUILD_TESTS=OFF",
             "-DBUILD_PYTHON=ON",
         ]
 
