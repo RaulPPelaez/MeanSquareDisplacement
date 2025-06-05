@@ -2,13 +2,14 @@ name: msd
 channels:
   - conda-forge
 dependencies:
-  - python
   - cmake
   - make
   - gxx
   - cuda-nvcc
   - libcufft-dev
-  - pip
   - fftw
+  - python
+  - pip
+  # [test]
   - pytest
   - numpy
