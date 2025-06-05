@@ -66,20 +66,16 @@ if(BUILD_PYTHON)
   install(TARGETS wrapper LIBRARY DESTINATION ${Python_SITEARCH}/mean_square_displacement)
 endif()
 
-if(INSTALL_HEADER_FILES)
+if(INSTALL_HEADERS)
 install(
   DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-  DESTINATION include
+  DESTINATION include/msd
 )
 endif()
 install(
   TARGETS msd
   EXPORT msdTargets
   LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-  PUBLIC_HEADER DESTINATION include/msd
 )
 install(
   EXPORT msdTargets
