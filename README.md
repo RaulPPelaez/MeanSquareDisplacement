@@ -99,7 +99,11 @@ The input file consists of a series of particle positions and dimensions at diff
 ```  
 The output file `pos.msd` will contain the Mean Square Displacement for each time step and dimension, averaged over all particles. The first column will contain the time steps, and the subsequent columns will contain the MSD values for each dimension.
 
-### Python Wrapper:
+### C++ and Python APIs:
+
+Check the [documentation](https://raulppelaez.github.io/MeanSquareDisplacement/) for the C++ and Python APIs.
+
+## Python Example:
 The following example generates a set of random walks in 2D and computes the MSD using the Python wrapper. Each dimension has a different diffusion coefficient.
 
 ```python
@@ -129,10 +133,7 @@ The following example generates a set of random walks in 2D and computes the MSD
  ), f"The slopes of the MSD should be close to 1 for Brownian motion. Got slopes: {slopes}"
 ```
 
-### C++ API:
-The C++ library exposes a single function:
 
-```cpp
 
     
 ## References:    
