@@ -40,7 +40,6 @@ class CMakeBuild(build_ext):
         )  # Use sys.prefix to install in the environment's prefix
         cmake_args = [
             "-DCMAKE_INSTALL_PREFIX=" + install_dir,  # Point to the install directory
-            "-DPYTHON_EXECUTABLE=" + sys.executable,
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
             "-DBUILD_TESTS=OFF",
             "-DBUILD_EXECUTABLE=OFF",
