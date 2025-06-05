@@ -1,4 +1,5 @@
 #ifndef GITVERSION_H
 #define GITVERSION_H
 #define GITVERSION @GITCOMMIT@
+#define MSD_VERSION "@PROJECT_VERSION@"
 #endif

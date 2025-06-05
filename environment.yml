@@ -1,0 +1,17 @@
+name: msd
+channels:
+  - conda-forge
+dependencies:
+  - cmake
+  - make
+  - gxx
+  - cuda-nvcc
+  - libcufft-dev
+  - fftw
+  - python
+  - pip
+  # [test]
+  - pytest
+  - numpy
+  # [docs]
+  - doxygen

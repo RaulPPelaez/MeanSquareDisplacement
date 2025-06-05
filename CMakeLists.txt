@@ -1,52 +1,34 @@
-cmake_minimum_required (VERSION 3.8)
-include(CheckLanguage)
-include(CheckCXXCompilerFlag)
-project (MeanSquareDisplacement CXX)
-set( CMAKE_VERBOSE_MAKEFILE on )
-set (MeanSquareDisplacement_VERSION_MAJOR \"2\")
-set (MeanSquareDisplacement_VERSION_MINOR \"0\")
+cmake_minimum_required (VERSION 3.11)
+# Try to get version from Git tags
+execute_process(
+    COMMAND git describe --tags --abbrev=0
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-set(CMAKE_CXX_STANDARD 11)
+# Fallback if git fails
+if(NOT GIT_TAG)
+    set(GIT_TAG "0.0.0")
+endif()
+
+project(MeanSquareDisplacement VERSION ${GIT_TAG} LANGUAGES CXX)
+message(STATUS "MeanSquareDisplacement version: ${GIT_TAG}")
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-#I want only std=c++11, not c++0x
-check_cxx_compiler_flag("-std=c++11" HAS_CXX11)
-if(NOT HAS_CXX11)
-  message(FATAL_ERROR "C++ compiler needs to allow c++11 standard")
-endif()
-
 option(USE_BOOST "Use Boost-qi for reading, highly improves reading performance" OFF)
-option(DONT_USE_CUDA "Dont compile in hybrid CPU/GPU mode, requires nvcc" OFF)
-option(USE_MKL "Uses MKL FFTW interface instead of FFTW3" OFF)
-option(USE_CPU "Uses FFTW and performs the whole computation in CPU, no CUDA installation needed if DONT_USE_GPU is ON " ON)
-
-if(NOT DONT_USE_CUDA)
-  check_language(CUDA)
-  if(CMAKE_CUDA_COMPILER)
-    enable_language(CUDA)
-    set(USE_CUDA ON)
-    
-    if(CMAKE_CUDA_COMPILER_VERSION VERSION_GREATER_EQUAL 11)
-    set(CMAKE_CUDA_STANDARD 14)
-    set(CMAKE_CXX_STANDARD 14)
-    else()
-      include_directories(src/third_party)
-      set(CMAKE_CXX_STANDARD 11)
-      set(CMAKE_CUDA_STANDARD 11)
-    endif()
-
-    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
-    set(CMAKE_CUDA_SEPARABLE_COMPILATION OFF)
-    
-    #execute_process(COMMAND bash  ${PROJECT_SOURCE_DIR}/cmake/listArchs.sh OUTPUT_VARIABLE ARCHS)
-    set(CMAKE_CUDA_FLAGS "  --expt-extended-lambda ${ARCHS} ${CMAKE_CUDA_FLAGS}")
-    
-  endif()
+option(USE_CUDA "Compile in hybrid CPU/GPU mode, requires nvcc" ON)
+option(BUILD_TESTS "Build the tests" ON)
+option(BUILD_EXECUTABLE "Build the executable" ON)
+option(INSTALL_HEADERS "Install the headers" ON)
+if(NOT CMAKE_CUDA_ARHITECTURES)
+  set(CMAKE_CUDA_ARCHITECTURES "all-major")
 endif()
-
-
-#set(CMAKE_CXX_FLAGS "-Wall -Wextra -fPIC" ${CMAKE_CXX_FLAGS})
+if(USE_CUDA)
+  enable_language(CUDA)
+  set(USE_CUDA ON)
+  set(CMAKE_CUDA_SEPARABLE_COMPILATION OFF)
+endif()
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -55,6 +37,9 @@ endif()
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-include_directories(src/third_party)
-add_subdirectory(src)
+add_subdirectory(mean_square_displacement)
 
+if(BUILD_TESTS)
+  enable_testing()
+  add_subdirectory(tests)
+endif()
