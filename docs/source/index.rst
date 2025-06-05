@@ -13,7 +13,7 @@ Mean Square Displacement's documentation
 C++ API
 -------
 
-.. doxygenfile:: msd.hpp
+.. doxygennamespace:: msd
    :project: msd
 
 Python API

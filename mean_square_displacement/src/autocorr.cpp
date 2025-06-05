@@ -1,9 +1,9 @@
-#include "common.hpp"
-#include "autocorr.hpp"
+#include "msd/common.hpp"
+#include "msd/autocorr.hpp"
 #include <stdexcept>
-#include "autocorr_cpu.hpp"
+#include "msd/autocorr_cpu.hpp"
 #ifdef USE_CUDA
-#include "autocorr_cuda.cuh"
+#include "msd/autocorr_cuda.cuh"
 #endif
 namespace msd {
 

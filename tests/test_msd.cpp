@@ -1,4 +1,4 @@
-#include "msd.hpp"
+#include "msd/msd.hpp"
 #include <gtest/gtest.h>
 #include <numeric>
 #include <random>

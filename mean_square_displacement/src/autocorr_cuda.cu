@@ -1,6 +1,6 @@
-#include "autocorr_cuda.cuh"
-#include "cufftDebug.h"
-#include "cufftPrecisionAgnostic.h"
+#include "msd/autocorr_cuda.cuh"
+#include "msd/cufftDebug.h"
+#include "msd/cufftPrecisionAgnostic.h"
 #include <span>
 #include <thrust/device_malloc_allocator.h>
 #include <thrust/device_vector.h>

@@ -59,10 +59,10 @@ written as a self recurrent relation by defining: D(k) = r^2(k), D(-1) = D(N) =
 0 Q    = 2*\sum_{k=0}^{N-1}{D(k)} And doing for m = 0, ..., N-1: Q = Q - D(m-1)
 - D(N-m) S1(m) = Q/(N-m)
  */
-#include "defines.h"
-#include "gitversion.h"
-#include "msd.hpp"
-#include "superIO.h"
+#include "msd/defines.h"
+#include "msd/gitversion.h"
+#include "msd/msd.hpp"
+#include "msd/superIO.h"
 #include <fstream>
 #include <iostream>
 #include <span>

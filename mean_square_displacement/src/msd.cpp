@@ -1,7 +1,7 @@
-#include "msd.hpp"
-#include "autocorr.hpp"
-#include "common.hpp"
-#include "kahan.hpp"
+#include "msd/msd.hpp"
+#include "msd/autocorr.hpp"
+#include "msd/common.hpp"
+#include "msd/kahan.hpp"
 #include <algorithm>
 #include <span>
 #include <stdexcept>

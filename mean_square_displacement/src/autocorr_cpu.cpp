@@ -1,5 +1,5 @@
-#include "autocorr.hpp"
-#include "fftwPrecisionAgnostic.h"
+#include "msd/autocorr.hpp"
+#include "msd/fftwPrecisionAgnostic.h"
 #include <span>
 namespace msd {
 

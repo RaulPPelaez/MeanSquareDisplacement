@@ -1,4 +1,4 @@
-#include "msd.hpp"
+#include "msd/msd.hpp"
 #include <iostream>
 #include <nanobind/nanobind.h>
 #include <nanobind/ndarray.h>
