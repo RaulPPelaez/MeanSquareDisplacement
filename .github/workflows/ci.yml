@@ -61,4 +61,19 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX ..
         make -j5
         ctest
-        
+
+    - name: Build Documentation
+      run: |
+        micromamba activate spreadinterp
+        cd docs
+        pip install -r requirements.txt
+        doxygen ../Doxyfile
+        make html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/build/html
+        publish_branch: gh-pages
+        force_orphan: true
