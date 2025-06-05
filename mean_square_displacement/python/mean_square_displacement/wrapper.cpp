@@ -68,5 +68,32 @@ pyarray msd_dispatch(pyarray_c signal, std::string device) {
 NB_MODULE(wrapper, m) {
   m.def("mean_square_displacement", &msd_dispatch,
 	"signal"_a, "device"_a = "cpu",
-        "Compute mean square displacement.");
+        R"pbdoc(
+    Compute the mean square displacement (MSD) of a set of particle trajectories over time.
+
+    Parameters
+    ----------
+    signal : ndarray[float32 or float64, shape=(N, D, T)]
+        A 3D array containing the trajectories of N particles over T time steps
+        in D spatial dimensions. So that:
+
+            signal[i, k, j] = position of particle i in dimension k at time j
+
+    device : str, optional
+        The device to perform computation on. Options are:
+        - 'cpu' (default)
+        - 'gpu'
+
+    Returns
+    -------
+    ndarray
+        A 2D array of shape (T, D) containing the mean square displacement for each
+        time lag and each dimension, averaged for all particles.
+
+    Notes
+    -----
+    The function internally flattens the data and dispatches it to a C++ backend
+    that performs the MSD computation efficiently. The output shares the same
+    data type as the input (`float32` or `float64`).
+	 )pbdoc");
 }
