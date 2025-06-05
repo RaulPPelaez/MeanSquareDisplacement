@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    # Run every Sunday at midnight
+    - cron:  '0 0 * * 0'
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Show dependency file
+      run: cat environment.yml
+      
+    - name: Install Mamba
+      uses: mamba-org/setup-micromamba@v2
+      with:
+        environment-file: environment.yml
+        cache-environment: true
+        cache-downloads: true
+
+    - name: List environment
+      run: |
+        micromamba activate msd
+        micromamba list
+
+    - name: Configure and compile the library
+      run: |
+        micromamba activate msd
+        pip install -vv .
+      
+    - name: Try to import
+      run: |
+        micromamba activate msd
+        python -c "import msd"
+        
+    - name: Run tests
+      run: |
+        micromamba activate msd
+        pytest -vs     
+        
+    - name: Compile and run C++ tests
+      run: |
+        micromamba activate msd
+        mkdir -p build
+        cd build
+        cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX ..
+        make -j5
+        ctest
+        
