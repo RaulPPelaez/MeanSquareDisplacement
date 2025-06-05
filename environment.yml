@@ -13,3 +13,5 @@ dependencies:
   # [test]
   - pytest
   - numpy
+  # [docs]
+  - doxygen
