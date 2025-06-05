@@ -46,7 +46,7 @@ jobs:
     - name: Try to import
       run: |
         micromamba activate msd
-        python -c "import msd"
+        python -c "import mean_square_displacement"
         
     - name: Run tests
       run: |
