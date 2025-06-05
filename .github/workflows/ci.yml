@@ -61,13 +61,14 @@ jobs:
         cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX ..
         make -j5
         ctest
+        cd ..
 
     - name: Build Documentation
       run: |
         micromamba activate msd
         cd docs
         pip install -r requirements.txt
-        doxygen ../Doxyfile
+        doxygen Doxyfile
         make html
 
     - name: Deploy to GitHub Pages
