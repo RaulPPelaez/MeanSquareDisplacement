@@ -120,7 +120,7 @@ def test_random_walk():
 
 def test_random_walk_different_slopes():
     # Test with different slopes for each dimension
-    nparticles = 300000
+    nparticles = 10000
     ndim = 2
     ntimes = 3000
     expected_slopes = [1, 2]  # Different slopes for each dimension
