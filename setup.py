@@ -42,6 +42,7 @@ class CMakeBuild(build_ext):
             "-DCMAKE_INSTALL_PREFIX=" + install_dir,  # Point to the install directory
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
             "-DBUILD_TESTS=OFF",
+            "-DINSTALL_HEADERS=OFF",
             "-DBUILD_EXECUTABLE=OFF",
             "-DBUILD_PYTHON=ON",
             f"-DUSE_CUDA={os.environ.get('USE_CUDA', 'ON').upper()}",
