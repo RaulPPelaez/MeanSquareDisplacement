@@ -7,7 +7,8 @@ target_include_directories(msd
   PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include>
-)
+  )
+
 set_target_properties(msd PROPERTIES POSITION_INDEPENDENT_CODE ON)
 add_library(msd::msd ALIAS msd) # For FetchContent compatibility
 
@@ -68,7 +69,9 @@ endif()
 
 if(INSTALL_HEADERS)
 install(
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/msd.hpp
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/common.hpp
+  FILES ${CMAKE_CURRENT_SOURCE_DIR}/include/defines.h
   DESTINATION include/msd
 )
 endif()
