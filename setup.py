@@ -43,6 +43,7 @@ class CMakeBuild(build_ext):
             "-DPYTHON_EXECUTABLE=" + sys.executable,
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
             "-DBUILD_TESTS=OFF",
+            "-DBUILD_EXECUTABLE=OFF",
             "-DBUILD_PYTHON=ON",
         ]
 
