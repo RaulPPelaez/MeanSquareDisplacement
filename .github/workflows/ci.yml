@@ -41,7 +41,7 @@ jobs:
     - name: Configure and compile the library
       run: |
         micromamba activate msd
-        pip install -vv .
+        pip install -v .
       
     - name: Try to import
       run: |
