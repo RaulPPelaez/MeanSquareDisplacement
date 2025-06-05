@@ -76,6 +76,10 @@ install(
   TARGETS msd
   EXPORT msdTargets
   LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+  PUBLIC_HEADER DESTINATION include/msd
 )
 install(
   EXPORT msdTargets
