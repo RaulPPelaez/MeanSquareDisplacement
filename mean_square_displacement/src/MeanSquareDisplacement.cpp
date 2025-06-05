@@ -225,6 +225,7 @@ Configuration parseCLI(int argc, char *argv[]) {
 
 void print_help() {
   std::cerr << "  Raul P. Pelaez. Fast Mean Square Displacement" << std::endl;
+  std::cerr << " Project version: " << MSD_VERSION << std::endl;
   std::cerr << "  " << std::endl;
   std::cerr << "  This code computes the MSD of a list of trajectories in "
                "spunto format using the FFT in O(N) time."

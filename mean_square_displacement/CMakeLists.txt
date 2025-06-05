@@ -38,7 +38,6 @@ if(GIT_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
 else()
   SET(GITCOMMIT "unknown")
 endif()
-
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/include/gitversion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/include/gitversion.h)
 
 

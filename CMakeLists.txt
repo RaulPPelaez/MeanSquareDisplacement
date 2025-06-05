@@ -1,5 +1,19 @@
 cmake_minimum_required (VERSION 3.11)
-project (MeanSquareDisplacement VERSION 3.0.0 LANGUAGES CXX)
+# Try to get version from Git tags
+execute_process(
+    COMMAND git describe --tags --abbrev=0
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_TAG
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# Fallback if git fails
+if(NOT GIT_TAG)
+    set(GIT_TAG "0.0.0")
+endif()
+
+project(MeanSquareDisplacement VERSION ${GIT_TAG} LANGUAGES CXX)
+message(STATUS "MeanSquareDisplacement version: ${GIT_TAG}")
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 
