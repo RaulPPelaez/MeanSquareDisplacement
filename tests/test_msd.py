@@ -120,9 +120,9 @@ def test_random_walk():
 
 def test_random_walk_different_slopes():
     # Test with different slopes for each dimension
-    nparticles = 100000
+    nparticles = 300000
     ndim = 2
-    ntimes = 1000
+    ntimes = 3000
     expected_slopes = [1, 2]  # Different slopes for each dimension
     positions = np.random.randn(nparticles, ndim, ntimes).astype(np.float64)
     positions[:, :, 0] = 0  # Start all particles at the origin
