@@ -33,7 +33,7 @@ html_theme = "sphinx_rtd_theme"
 # Breathe config
 breathe_projects = {"msd": "../doxygen/xml"}
 breathe_default_project = "msd"
-
+breathe_show_include = True
 # Autodoc options
 autodoc_default_options = {
     "members": True,
