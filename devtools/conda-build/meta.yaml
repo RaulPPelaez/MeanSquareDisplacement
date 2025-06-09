@@ -1,5 +1,7 @@
+{% set data = load_setup_py_data() %}
+
 package:
-  name: mean-square-displacement
+  name: {{ data['name'] }}
   version: {{ GIT_DESCRIBE_TAG }}
   
 source:
@@ -11,6 +13,7 @@ build:
 requirements:
   build:
     - python
+    - setuptools
     - pip
     - cmake >=3.11
     - {{ compiler('cxx') }}
@@ -42,6 +45,6 @@ test:
     - pytest -vs
      
 about:
-  home: https://github.com/RaulPPelaez/MeanSquareDisplacement/s
+  home: https://github.com/RaulPPelaez/MeanSquareDisplacement/
   license: MIT
   summary: Utility to compute the MSD of a list of trajectories using the FFT in O(N) time. It can run with or without GPU (CUDA) support. The project exposes a CLI utility, a C++ library and a Python wrapper.
