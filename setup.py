@@ -64,7 +64,7 @@ class CMakeBuild(build_ext):
 
 
 setup(
-    name="mean_square_displacement",
+    name="mean-square-displacement",
     version=version,
     description="High-performance MSD library",
     packages=["mean_square_displacement"],
