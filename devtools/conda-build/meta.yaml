@@ -13,16 +13,19 @@ build:
 requirements:
   build:
     - python ={{ python }}
-    - setuptools
-    - setuptools-scm
-    - pip
     - cmake >=3.11
     - {{ compiler('cxx') }}
     - cuda-nvcc
     - make
     - nanobind
-    - libcufft-dev
     - fftw
+    - cuda-version ={{ cuda_compiler_version }}
+  host:
+    - python ={{ python }}
+    - setuptools
+    - setuptools-scm
+    - pip
+    - libcufft-dev
     - cuda-version ={{ cuda_compiler_version }}
   run:
     - python ={{ python }}
