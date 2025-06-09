@@ -12,7 +12,7 @@ build:
   string: py{{ PY_VER | replace(".", "") }}_cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
 requirements:
   build:
-    - python
+    - python {{ python }}
     - setuptools
     - pip
     - cmake >=3.11
