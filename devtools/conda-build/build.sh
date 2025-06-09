@@ -1,10 +1,10 @@
-
 set -x
+pip install -v . --no-deps
+
 SRC_DIR=$(pwd)
 TMPDIR=$(mktemp -d)
 cd $TMPDIR
 cmake $SRC_DIR -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=all-major -DUSE_CUDA=ON -DBUILD_TESTS=OFF -DBUILD_EXECUTABLE=ON -DINSTALL_HEADERS=ON -DBUILD_PYTHON=OFF
 make -j4
 make install
-pip install -v $SRC_DIR --no-deps
 rm -rf $TMPDIR
