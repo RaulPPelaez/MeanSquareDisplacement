@@ -7,25 +7,25 @@ source:
 
 build:
   number: 0
-  string: cuda{{ CUDA_VERSION | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
+  string: py{{ PY_VER | replace(".", "") }}_cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
 requirements:
   build:
-    - python ={{ PYTHON_VERSION }}
+    - python
     - pip
     - cmake >=3.11
-    - gxx
-    - cuda-version {{ CUDA_VERSION }}
+    - {{ compiler('cxx') }}
     - cuda-nvcc
     - make
     - nanobind
     - libcufft-dev
     - fftw
+    - cuda-version ={{ cuda_compiler_version }}
   run:
-    - python ={{ PYTHON_VERSION }}
+    - python
+    - cuda-version >={{ cuda_compiler_version }}
     - cuda-cudart
     - libcufft
     - fftw
-    - cuda-version >={{ CUDA_VERSION }}
 
 
 test:

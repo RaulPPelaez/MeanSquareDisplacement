@@ -18,7 +18,6 @@ jobs:
     strategy:
       matrix:
         cuda-version: ["12.1", "12.3", "12.6", "12.9"]
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,7 +34,6 @@ jobs:
       - name: Build and upload
         env:
           CUDA_VERSION: ${{ matrix.cuda-version }}
-          PYTHON_VERSION: ${{ matrix.python-version }}
         run: |
           out_dir=`mktemp -d -t build-XXXXXXXXXX`
           conda verify devtools/conda-build/
