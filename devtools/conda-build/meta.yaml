@@ -24,7 +24,7 @@ requirements:
     - fftw
     - cuda-version ={{ cuda_compiler_version }}
   run:
-    - python
+    - python {{ python }}
     - cuda-version >={{ cuda_compiler_version }}
     - cuda-cudart
     - libcufft
