@@ -10,17 +10,22 @@ build:
   string: cuda{{ CUDA_VERSION | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
 requirements:
   build:
+    - python
+    - pip
     - cmake >=3.11
     - gxx
     - gcc
     - cuda-version {{ CUDA_VERSION }}
     - cuda-nvcc
     - make
+    - nanobind
   host:
+    - python
     - libcufft-dev
     - fftw
     - cuda-version {{ CUDA_VERSION }}
   run:
+    - python
     - cuda-cudart
     - libcufft
     - fftw
