@@ -1,0 +1,37 @@
+package:
+  name: mean-square-displacement
+  version: {{ GIT_DESCRIBE_TAG }}
+  
+source:
+  git_url: ../../../
+
+build:
+  number: 0
+  string: cuda{{ CUDA_VERSION | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
+requirements:
+  build:
+    - cmake >=3.11
+    - gxx
+    - gcc
+    - cuda-version {{ CUDA_VERSION }}
+    - cuda-nvcc
+    - make
+  host:
+    - libcufft-dev
+    - fftw
+    - cuda-version {{ CUDA_VERSION }}
+  run:
+    - cuda-cudart
+    - libcufft
+    - fftw
+    - cuda-version {{ CUDA_VERSION }}    
+
+
+test:
+  commands:
+    - ls $PREFIX/bin/UAMMDlauncher
+     
+about:
+  home: https://github.com/RaulPPelaez/MeanSquareDisplacement/s
+  license: MIT
+  summary: Utility to compute the MSD of a list of trajectories using the FFT in O(N) time. It can run with or without GPU (CUDA) support. The project exposes a CLI utility, a C++ library and a Python wrapper.
