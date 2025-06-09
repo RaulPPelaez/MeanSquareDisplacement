@@ -18,7 +18,6 @@ requirements:
     - cuda-nvcc
     - make
     - nanobind
-    - numpy
     - libcufft-dev
     - fftw
   run:
@@ -31,7 +30,16 @@ requirements:
 
 test:
   commands:
-    - ls $PREFIX/bin/UAMMDlauncher
+    - ls $PREFIX/bin/msd
+  imports:
+    - mean_square_displacement
+  requires:
+    - pytest
+    - numpy
+  source_files:
+    - tests
+  commands:
+    - pytest -vs
      
 about:
   home: https://github.com/RaulPPelaez/MeanSquareDisplacement/s
