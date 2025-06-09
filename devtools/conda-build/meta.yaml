@@ -12,7 +12,7 @@ build:
   string: py{{ PY_VER | replace(".", "") }}_cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
 requirements:
   build:
-    - python {{ python }}
+    - python ={{ python }}
     - setuptools
     - setuptools-scm
     - pip
@@ -25,7 +25,7 @@ requirements:
     - fftw
     - cuda-version ={{ cuda_compiler_version }}
   run:
-    - python {{ python }}
+    - python ={{ python }}
     - cuda-version >={{ cuda_compiler_version }}
     - cuda-cudart
     - libcufft
@@ -35,6 +35,8 @@ requirements:
 test:
   commands:
     - ls $PREFIX/bin/msd
+  imports:
+    - mean_square_displacement
   requires:
     - pytest
     - numpy
