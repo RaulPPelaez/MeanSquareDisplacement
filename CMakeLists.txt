@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.11)
 # Try to get version from Git tags
 execute_process(
     COMMAND git describe --tags --abbrev=0
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
     OUTPUT_VARIABLE GIT_TAG
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
