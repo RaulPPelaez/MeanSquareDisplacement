@@ -14,6 +14,7 @@ requirements:
   build:
     - python {{ python }}
     - setuptools
+    - setuptools-scm
     - pip
     - cmake >=3.11
     - {{ compiler('cxx') }}
