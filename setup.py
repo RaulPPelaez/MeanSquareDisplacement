@@ -25,9 +25,7 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
-        install_dir = os.path.abspath(
-            sys.prefix
-        )  # Use sys.prefix to install in the environment's prefix
+        install_dir = os.environ.get("PREFIX", sys.prefix)
         cmake_args = [
             "-DCMAKE_INSTALL_PREFIX=" + install_dir,  # Point to the install directory
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
