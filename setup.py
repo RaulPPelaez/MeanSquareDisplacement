@@ -1,18 +1,8 @@
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import subprocess
 import os
 import sys
-
-try:
-    version = (
-        subprocess.check_output(["git", "describe", "--abbrev=0", "--tags"])
-        .strip()
-        .decode("utf-8")
-    )
-except:
-    print("Failed to retrieve the current version, defaulting to 0")
-    version = "0"
 
 
 class CMakeExtension(Extension):
@@ -64,7 +54,6 @@ class CMakeBuild(build_ext):
 
 
 setup(
-    version=version,
     description="High-performance MSD library",
     packages=["mean_square_displacement"],
     package_dir={"": "mean_square_displacement/python"},
