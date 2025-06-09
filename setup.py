@@ -26,11 +26,12 @@ class CMakeBuild(build_ext):
 
     def build_extension(self, ext):
         install_dir = os.environ.get("PREFIX", sys.prefix)
+        python_executable = os.environ.get("PYTHON", sys.executable)
         cmake_args = [
             "-DCMAKE_INSTALL_PREFIX=" + install_dir,  # Point to the install directory
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
             "-DBUILD_TESTS=OFF",
-            "-DPython_EXECUTABLE=" + sys.executable,
+            f"-DPython_EXECUTABLE={python_executable}",
             "-DINSTALL_HEADERS=OFF",
             "-DBUILD_EXECUTABLE=OFF",
             "-DBUILD_PYTHON=ON",
