@@ -82,6 +82,7 @@ install(
   DESTINATION include/msd
 )
 endif()
+if(INSTALL_HEADERS OR BUILD_EXECUTABLE)
 install(
   TARGETS msd
   EXPORT msdTargets
@@ -93,3 +94,4 @@ install(
   NAMESPACE msd::
   DESTINATION lib/cmake/msd
 )
+endif()

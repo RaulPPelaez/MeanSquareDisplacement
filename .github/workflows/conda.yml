@@ -15,9 +15,6 @@ jobs:
     defaults:
       run:
         shell: bash -el {0}
-    strategy:
-      matrix:
-        cuda-version: ["12.1", "12.3", "12.6", "12.9"]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,8 +29,6 @@ jobs:
           channels: conda-forge
           conda-remove-defaults: true
       - name: Build and upload
-        env:
-          CUDA_VERSION: ${{ matrix.cuda-version }}
         run: |
           out_dir=`mktemp -d -t build-XXXXXXXXXX`
           conda verify devtools/conda-build/
