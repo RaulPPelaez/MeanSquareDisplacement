@@ -1,6 +1,6 @@
 set -x
 pip install -v . --no-deps
-
+ls -lsha .
 SRC_DIR=$(pwd)
 TMPDIR=$(mktemp -d)
 cd $TMPDIR
