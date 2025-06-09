@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
-${PYTHON} -m pip install -v .
+${PYTHON} -m pip install -v .  --no-build-isolation --no-deps
 SRC_DIR=$(pwd)
 TMPDIR=$(mktemp -d)
 cd $TMPDIR
