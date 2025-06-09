@@ -1,4 +1,5 @@
 set -x
+export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
 pip install -v .
 SRC_DIR=$(pwd)
 TMPDIR=$(mktemp -d)
