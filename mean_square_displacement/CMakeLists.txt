@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 find_package(FFTW REQUIRED COMPONENTS FLOAT_LIB DOUBLE_LIB)
 add_library(msd SHARED src/msd.cpp)
-include_directories(autocorr_cuda
-  PUBLIC
+include_directories(
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/mean_square_displacement/include>
   $<INSTALL_INTERFACE:include>
 )
