@@ -55,8 +55,12 @@ if(BUILD_PYTHON)
   find_package(Python 3
     REQUIRED COMPONENTS Interpreter Development.Module
     OPTIONAL_COMPONENTS Development.SABIModule)
-  find_package(nanobind QUIET)
+  execute_process(
+    COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+    OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
+  find_package(nanobind CONFIG QUIET HINTS "${nanobind_ROOT}")
   if (NOT nanobind_FOUND)
+    message(STATUS "nanobind not found, fetching from GitHub")
     include(FetchContent)
     FetchContent_Declare(
       nanobind
