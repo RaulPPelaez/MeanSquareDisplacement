@@ -1,18 +1,8 @@
-from setuptools import setup, Extension, find_packages
+from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import subprocess
 import os
 import sys
-
-try:
-    version = (
-        subprocess.check_output(["git", "describe", "--abbrev=0", "--tags"])
-        .strip()
-        .decode("utf-8")
-    )
-except:
-    print("Failed to retrieve the current version, defaulting to 0")
-    version = "0"
 
 
 class CMakeExtension(Extension):
@@ -35,13 +25,13 @@ class CMakeBuild(build_ext):
             self.build_extension(ext)
 
     def build_extension(self, ext):
-        install_dir = os.path.abspath(
-            sys.prefix
-        )  # Use sys.prefix to install in the environment's prefix
+        install_dir = os.environ.get("PREFIX", sys.prefix)
+        python_executable = os.environ.get("PYTHON", sys.executable)
         cmake_args = [
             "-DCMAKE_INSTALL_PREFIX=" + install_dir,  # Point to the install directory
             "-DCMAKE_BUILD_TYPE=" + ("Debug" if self.debug else "Release"),
             "-DBUILD_TESTS=OFF",
+            f"-DPython_EXECUTABLE={python_executable}",
             "-DINSTALL_HEADERS=OFF",
             "-DBUILD_EXECUTABLE=OFF",
             "-DBUILD_PYTHON=ON",
@@ -64,9 +54,6 @@ class CMakeBuild(build_ext):
 
 
 setup(
-    name="mean_square_displacement",
-    version=version,
-    description="High-performance MSD library",
     packages=["mean_square_displacement"],
     package_dir={"": "mean_square_displacement/python"},
     ext_modules=[CMakeExtension("mean_square_displacement")],

@@ -1,0 +1,54 @@
+{% set pyproject = load_file_data('pyproject.toml') %}
+
+package:
+  name: {{ pyproject.get("project").get("name") }}
+  version: {{ GIT_DESCRIBE_TAG }}
+  
+source:
+  git_url: ../../
+
+build:
+  number: 0
+  string: py{{ PY_VER | replace(".", "") }}_cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}
+requirements:
+  build:
+    - python ={{ python }}
+    - cmake >=3.11
+    - {{ compiler('cxx') }}
+    - cuda-nvcc
+    - make
+    - nanobind
+    - fftw
+    - cuda-version ={{ cuda_compiler_version }}
+  host:
+    - python ={{ python }}
+    - setuptools
+    - setuptools-scm
+    - pip
+    - libcufft-dev
+    - cuda-version ={{ cuda_compiler_version }}
+  run:
+    - python ={{ python }}
+    - cuda-version >={{ cuda_compiler_version }}
+    - cuda-cudart
+    - libcufft
+    - fftw
+
+
+test:
+  commands:
+    - ls $PREFIX/bin/msd
+  imports:
+    - mean_square_displacement
+  requires:
+    - pytest
+    - numpy
+  source_files:
+    - tests
+  commands:
+    - pytest -vs
+     
+about:
+  home: https://github.com/RaulPPelaez/MeanSquareDisplacement/
+  license: MIT
+  summary: Utility to compute the MSD of a list of trajectories using the FFT in O(N) time. It can run with or without GPU (CUDA) support. The project exposes a CLI utility, a C++ library and a Python wrapper.

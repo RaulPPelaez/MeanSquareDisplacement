@@ -1,0 +1,11 @@
+#!/bin/bash
+set -x
+export SETUPTOOLS_SCM_PRETEND_VERSION="${PKG_VERSION}"
+${PYTHON} -m pip install -v .  --no-build-isolation --no-deps
+SRC_DIR=$(pwd)
+TMPDIR=$(mktemp -d)
+cd $TMPDIR
+cmake $SRC_DIR -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_BUILD_TYPE=Release -DCMAKE_CUDA_ARCHITECTURES=all-major -DUSE_CUDA=ON -DBUILD_TESTS=OFF -DBUILD_EXECUTABLE=ON -DINSTALL_HEADERS=ON -DBUILD_PYTHON=OFF
+make -j4
+make install
+rm -rf $TMPDIR

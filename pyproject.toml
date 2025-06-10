@@ -1,3 +1,14 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=42", "setuptools_scm[toml]"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "mean-square-displacement"
+dynamic = ["version"]
+readme = "README.md"
+description = "High-performance MSD library"
+license = "MIT"
+requires-python = ">=3.8"
+[tool.setuptools_scm]
+version_scheme = "guess-next-dev"
+local_scheme = "node-and-date"

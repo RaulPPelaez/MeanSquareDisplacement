@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 
 find_package(FFTW REQUIRED COMPONENTS FLOAT_LIB DOUBLE_LIB)
 add_library(msd SHARED src/msd.cpp)
-include_directories(autocorr_cuda
-  PUBLIC
+include_directories(
   $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/mean_square_displacement/include>
   $<INSTALL_INTERFACE:include>
 )
@@ -56,8 +55,12 @@ if(BUILD_PYTHON)
   find_package(Python 3
     REQUIRED COMPONENTS Interpreter Development.Module
     OPTIONAL_COMPONENTS Development.SABIModule)
-  find_package(nanobind QUIET)
+  execute_process(
+    COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+    OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
+  find_package(nanobind CONFIG QUIET HINTS "${nanobind_ROOT}")
   if (NOT nanobind_FOUND)
+    message(STATUS "nanobind not found, fetching from GitHub")
     include(FetchContent)
     FetchContent_Declare(
       nanobind
