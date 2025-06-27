@@ -46,7 +46,7 @@ TEST(MSDTest, BasicFunctionality) {
 TEST(MSDTest, RandomCloud) {
   int nparticles = 1000;
   int ntimes = 10000;
-  int ndim = 1;
+  int ndim = 3;
   std::vector<double> positions(nparticles * ndim * ntimes);
   std::mt19937 rng(422); // Fixed seed for reproducibility
   std::normal_distribution<double> dist(0.0f, 1.0f);
@@ -66,4 +66,48 @@ TEST(MSDTest, RandomCloud) {
                                          positions.begin(), 0.0);
   double pos_std = std::sqrt(pos_sum_sq / (positions.size() - 1));
   EXPECT_NEAR(value, pos_std * pos_std * 2, 1e-2);
+}
+
+TEST(MSDTest, RandomCloudPerDirection) {
+  int nparticles = 1000;
+  int ntimes = 10000;
+  int ndim = 3;
+  std::vector<double> positions(nparticles * ndim * ntimes);
+  std::mt19937 rng(422); // Fixed seed for reproducibility
+  std::normal_distribution<double> dist(0.0f, 1.0f);
+  std::vector<double> constants(ndim);
+  std::iota(constants.begin(), constants.end(),
+            1.0); // Constants 1, 2, 3 for each dimension
+  // Multiply each dimension by a different constant
+  // signal[itime + signal_size * (dimensions * iparticle + idim)]
+  for (int i = 0; i < nparticles * ndim * ntimes; ++i) {
+    int dim = (i / (ntimes)) % ndim; // Determine dimension
+    positions[i] = dist(rng) * constants[dim];
+  }
+
+  std::span<double> signal_span(positions);
+  auto msd_result = mean_square_displacement(signal_span, device::cpu,
+                                             nparticles, ntimes, ndim);
+  ASSERT_EQ(msd_result.size(), ntimes * ndim);
+
+  for (int i = 0; i < ndim; ++i) {
+    double msd_value = 0;
+    double pos_std = 0;
+    int ntimesavg = 0; // Reset ntimes for each dimension
+    // For a random cloud, the MSD should be a constant value with std*std*2 of
+    // the distribution
+    // Compute the MSD for each dimension separately
+    for (int k = 1; k < ntimes / 2; ++k) {
+      double value = msd_result[k + i * ntimes];
+      for(int j = 0; j < nparticles; ++j) {
+	pos_std += pow(positions[k + ntimes*(ndim*j+i)], 2);
+      }
+      msd_value += value;
+      ntimesavg++;
+    }
+    msd_value /= ntimesavg;
+    pos_std = std::sqrt(pos_std / ntimesavg/ (nparticles - 1));
+    EXPECT_NEAR(msd_value, pos_std * pos_std * 2, 1e-2*constants[i])
+        << "MSD value in dimension " << i << " is "<< msd_value << ", expected: " << pos_std * pos_std * 2;
+  }
 }
