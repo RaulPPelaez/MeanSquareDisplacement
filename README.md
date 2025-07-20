@@ -1,4 +1,10 @@
 # Fast Mean Square Displacement (MSD)    
+
+
+
+[![DOI](https://zenodo.org/badge/119861285.svg)](https://doi.org/10.5281/zenodo.16206358)
+
+
   
   This code computes the MSD of a list of trajectories using the FFT in O(N) time. It can be compiled/run with or without GPU (CUDA) support.
   
